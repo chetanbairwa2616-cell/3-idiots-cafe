@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>3 Idiots Cafe</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 Idiots Cafe</title>
 
 <style>
 
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial;
 background:#3b2416;
 color:white;
-background-image:url("logo.jpg");
-background-repeat:no-repeat;
-background-position:center;
-background-size:500px;
-background-attachment:fixed;
 }
 
 header{
@@ -29,7 +24,7 @@ font-size:28px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:20px;
-padding:30px;
+padding:25px;
 }
 
 .item{
@@ -37,7 +32,7 @@ background:#4a2e1f;
 padding:15px;
 border-radius:12px;
 text-align:center;
-box-shadow:0 5px 15px rgba(0,0,0,0.4);
+box-shadow:0 5px 10px rgba(0,0,0,0.4);
 }
 
 .item img{
@@ -48,17 +43,17 @@ border-radius:10px;
 }
 
 button{
-background:#d35400;
-color:white;
+background:#e67e22;
 border:none;
-padding:10px 15px;
-margin-top:10px;
-border-radius:6px;
+padding:8px 14px;
+color:white;
+border-radius:5px;
+margin-top:8px;
 cursor:pointer;
 }
 
 button:hover{
-background:#e67e22;
+background:#ff9f43;
 }
 
 .cart{
@@ -68,53 +63,84 @@ margin:20px;
 border-radius:10px;
 }
 
-select{
-padding:8px;
-margin-top:10px;
+.orders{
+background:#1e120b;
+padding:20px;
+margin:20px;
+border-radius:10px;
 }
 
 </style>
 
 <script>
 
-let cart=[];
+let cart={}
 
 function addItem(name,price){
 
-cart.push({name,price});
-showCart();
+if(cart[name]){
+cart[name].qty++
+}else{
+cart[name]={price:price,qty:1}
+}
+
+showCart()
+
+}
+
+function removeItem(name){
+
+cart[name].qty--
+
+if(cart[name].qty<=0){
+delete cart[name]
+}
+
+showCart()
 
 }
 
 function showCart(){
 
-let cartHTML="";
-let total=0;
+let text=""
+let total=0
 
-cart.forEach((item)=>{
+for(let item in cart){
 
-cartHTML+=item.name+" - ₹"+item.price+"<br>";
-total+=item.price;
+let qty=cart[item].qty
+let price=cart[item].price
 
-});
+text+=item+" x"+qty+" ₹"+(price*qty)+" <button onclick=\"removeItem('"+item+"')\">-</button><br>"
 
-document.getElementById("cartItems").innerHTML=cartHTML;
-document.getElementById("total").innerText=total;
+total+=price*qty
 
 }
 
-function sendOrder(){
+document.getElementById("cartItems").innerHTML=text
+document.getElementById("total").innerText=total
 
-let table=document.getElementById("table").value;
+}
 
-let order="3 Idiots Cafe Order\n";
-order+="Table Number: "+table+"\n\n";
+function placeOrder(){
 
-cart.forEach((item)=>{
-order+=item.name+" ₹"+item.price+"\n";
-});
+let table=document.getElementById("table").value
 
-window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+encodeURIComponent(order);
+let order="Table "+table+"<br>"
+
+for(let item in cart){
+
+order+=item+" x"+cart[item].qty+"<br>"
+
+}
+
+let div=document.createElement("div")
+
+div.innerHTML=order+"<button onclick='this.parentElement.remove()'>Complete</button><hr>"
+
+document.getElementById("ordersList").appendChild(div)
+
+cart={}
+showCart()
 
 }
 
@@ -126,7 +152,7 @@ window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+e
 
 <header>
 
-<h1>3 Idiots Cafe</h1>
+3 Idiots Cafe  
 <p>Haldighati Gate Jaipur</p>
 
 </header>
@@ -146,28 +172,6 @@ window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+e
 
 <div class="item">
 
-<img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e">
-
-<h3>Pizza Medium</h3>
-<p>₹150</p>
-
-<button onclick="addItem('Pizza Medium',150)">Add</button>
-
-</div>
-
-<div class="item">
-
-<img src="https://images.unsplash.com/photo-1548365328-5b849d47f2f2">
-
-<h3>Pizza Large</h3>
-<p>₹190</p>
-
-<button onclick="addItem('Pizza Large',190)">Add</button>
-
-</div>
-
-<div class="item">
-
 <img src="https://images.unsplash.com/photo-1550547660-d9450f859349">
 
 <h3>Veg Burger</h3>
@@ -179,7 +183,7 @@ window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+e
 
 <div class="item">
 
-<img src="https://images.unsplash.com/photo-1601050690597-df0568f70950">
+<img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f">
 
 <h3>Honey Chilli Potato</h3>
 <p>₹130</p>
@@ -212,17 +216,6 @@ window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+e
 
 <div class="item">
 
-<img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735">
-
-<h3>Cold Coffee Medium</h3>
-<p>₹80</p>
-
-<button onclick="addItem('Cold Coffee Medium',80)">Add</button>
-
-</div>
-
-<div class="item">
-
 <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348">
 
 <h3>Cold Coffee Large</h3>
@@ -236,30 +229,36 @@ window.location.href="mailto:chetuhanotiya@gmail.com?subject=Cafe Order&body="+e
 
 <div class="cart">
 
-<h2>Your Order</h2>
+<h2>Your Cart</h2>
 
 <div id="cartItems"></div>
 
 <h3>Total ₹<span id="total">0</span></h3>
 
-<label>Select Table</label>
-
 <br>
 
 <select id="table">
 
-<option>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5</option>
-<option>6</option>
+<option>Table 1</option>
+<option>Table 2</option>
+<option>Table 3</option>
+<option>Table 4</option>
+<option>Table 5</option>
+<option>Table 6</option>
 
 </select>
 
 <br><br>
 
-<button onclick="sendOrder()">Place Order</button>
+<button onclick="placeOrder()">Place Order</button>
+
+</div>
+
+<div class="orders">
+
+<h2>Kitchen Orders</h2>
+
+<div id="ordersList"></div>
 
 </div>
 
